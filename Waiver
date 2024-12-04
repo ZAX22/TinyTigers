@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiver Form with Children</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6 max-w-3xl">
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <h1 class="text-2xl font-bold mb-6 text-center">Waiver Form</h1>
+            <form id="waiverForm" class="space-y-6">
+                <!-- Personal Information Section -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">Personal Information</h2>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" id="first_name" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="" required>
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" id="last_name" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contact Information Section -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">Contact Information</h2>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="tel" id="phone" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="" required>
+                        </div>
+                        <div>
+                            <label for="emergency_contact" class="block text-sm font-medium text-gray-700">Emergency Contact</label>
+                            <input type="tel" id="emergency_contact" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input type="email" id="email" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="" required>
+                </div>
+                <!-- Children Representation Section -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">Children Information</h2>
+                    <div>
+                        <label for="children_count" class="block text-sm font-medium text-gray-700">How many children are you representing?</label>
+                        <input type="number" id="children_count" min="0" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="0">
+                    </div>
+                    <div id="childrenFields" class="mt-4 space-y-4"></div>
+                </div>
+
+                <!-- Electronic Signature -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Signature</label>
+                    <div class="border-2 border-gray-300 rounded-lg mt-1">
+                        <canvas id="signaturePad" class="w-full h-48"></canvas>
+                    </div>
+                    <button type="button" id="clearSignature" class="mt-2 text-red-600 hover:underline">Clear Signature</button>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="flex items-center">
+                    <input id="terms" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required>
+                    <label for="terms" class="ml-2 text-sm text-gray-600">
+                        I have read the <a href="https://drive.google.com/file/d/1hr9C7LznZck2qfzwFwRFv8mWaTDvpV7S/view" class="text-blue-600 hover:underline">waiver<a class="ml-2 text-sm text-gray-600">and agree to its terms</a>.
+                    </label>
+                </div>
+                <div class="flex items-center">
+                    <input id="terms" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required>
+                    <label for="terms" class="ml-2 text-sm text-gray-600">
+                        Parent/Guardian Certification - I certify that I am the present or legal guardian of the minor participant(s) listed in this form</a>.
+                    </label>
+                </div>
+                 <div class="flex items-center">
+                    <input id="Legit" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required>
+                    <label for="Legit" class="ml-2 text-sm text-gray-600">
+                        I acknowledge the inherent risks involved in these activities, including the potential for injury or death. By completing this form, I confirm that I have read, understood, and voluntarily agree to its terms on behalf of myself and any children listed in the form. This agreement remains valid indefinetly</a>.
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("signaturePad");
+        const signaturePad = new SignaturePad(canvas);
+        const clearButton = document.getElementById("clearSignature");
+        const childrenCountInput = document.getElementById("children_count");
+        const childrenFieldsContainer = document.getElementById("childrenFields");
+
+        // Adjust canvas size dynamically
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear(); // Clear the canvas to ensure proper scaling
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Clear signature button
+        clearButton.addEventListener("click", () => {
+            signaturePad.clear();
+        });
+
+        // Generate input fields for children dynamically
+        childrenCountInput.addEventListener("input", () => {
+            const count = parseInt(childrenCountInput.value, 10);
+            childrenFieldsContainer.innerHTML = ""; // Clear existing fields
+
+            if (!isNaN(count) && count > 0) {
+                for (let i = 1; i <= count; i++) {
+                    const childFieldset = document.createElement("fieldset");
+                    childFieldset.className = "space-y-2";
+
+                    const firstNameField = document.createElement("div");
+                    firstNameField.innerHTML = `
+                        <label for="child_${i}_first_name" class="block text-sm font-medium text-gray-700">Child ${i} First Name</label>
+                        <input type="text" id="child_${i}_first_name" name="child_${i}_first_name" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    `;
+
+                    const lastNameField = document.createElement("div");
+                    lastNameField.innerHTML = `
+                        <label for="child_${i}_last_name" class="block text-sm font-medium text-gray-700">Child ${i} Last Name</label>
+                        <input type="text" id="child_${i}_last_name" name="child_${i}_last_name" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    `;
+
+                    childFieldset.appendChild(firstNameField);
+                    childFieldset.appendChild(lastNameField);
+                    childrenFieldsContainer.appendChild(childFieldset);
+                }
+            }
+        });
+
+        // Handle form submission
+        document.getElementById("waiverForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            if (signaturePad.isEmpty()) {
+                alert("Please provide your signature.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("first_name", document.getElementById("first_name").value);
+            formData.append("last_name", document.getElementById("last_name").value);
+            formData.append("signature", signaturePad.toDataURL()); // Add signature image as a Base64 string
+
+            // Collect child data
+            const children = [];
+            const count = parseInt(childrenCountInput.value, 10);
+            if (!isNaN(count) && count > 0) {
+                for (let i = 1; i <= count; i++) {
+                    const childFirstName = document.getElementById(`child_${i}_first_name`).value;
+                    const childLastName = document.getElementById(`child_${i}_last_name`).value;
+                    children.push({ first_name: childFirstName, last_name: childLastName });
+                }
+            }
+            formData.append("children", JSON.stringify(children));
+
+            // Submit the form
+            try {
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                alert(`Success: ${result.message}`);
+            } catch (error) {
+                alert(`Failed to submit form: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
